@@ -43,6 +43,14 @@
         
     });
 }
+-(void)reply:(NSString*)replyId{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if ([self.delegate respondsToSelector:@selector(replyJS:)]) {
+            [self.delegate replyJS:replyId];
+        }
+    });
+
+}
 
 @end
 

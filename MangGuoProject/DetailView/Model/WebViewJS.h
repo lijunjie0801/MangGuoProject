@@ -18,6 +18,8 @@
 
 -(void)goback;
 
+-(void)reply:(NSString *)replyId;
+
 -(void)subok:(NSString *)result;
 
 JSExportAs(share, -(void)share:(NSString *)param1 andParem2:(NSString *)param2 andParam3:(NSString *)param3 andParam4:(NSString *)param4);
@@ -29,6 +31,8 @@ JSExportAs(share, -(void)share:(NSString *)param1 andParem2:(NSString *)param2 a
 
 
 -(void)gobackJS;
+
+-(void)replyJS:(NSString *)replyId;
 
 -(void)cancelJS;
 

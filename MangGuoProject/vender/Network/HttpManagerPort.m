@@ -220,5 +220,14 @@ DEFINE_SINGLETON_FOR_CLASS(HttpManagerPort)
     }];
     
 }
+/**回复评论**/
+-(void)replyComment:(NSString *)user_id  news_id:(NSString *)news_id  content:(NSString *)content f_id:(NSString *)f_id Success:(void(^)(id responseObject))success Failure:(void(^)(NSError *error))failure{
+    [[HttpManagers sharedNetManager]POST:[NSString stringWithFormat:@"%@/goods/comment",BaseUrl] parameters:@{@"user_id":user_id,@"news_id":news_id,@"content":content,@"f_id":f_id} IsCache:NO ShowMsg:nil success:^(id  _Nonnull responseObject) {
+        success(responseObject);
+    } failure:^(NSError * _Nonnull error) {
+        failure(error);
+    }];
+    
+}
 
 @end

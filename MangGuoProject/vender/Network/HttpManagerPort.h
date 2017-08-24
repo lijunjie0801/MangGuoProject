@@ -58,4 +58,6 @@ DEFINE_SINGLETON_FOR_HEADER(HttpManagerPort)
 -(void)getTourData:(void(^)(id responseObject))success Failure:(void(^)(NSError *error))failure;
 /**提交评论**/
 -(void)submitComent:(NSString *)user_id  news_id:(NSString *)news_id  content:(NSString *)content Success:(void(^)(id responseObject))success Failure:(void(^)(NSError *error))failure;
+/**回复评论**/
+-(void)replyComment:(NSString *)user_id  news_id:(NSString *)news_id  content:(NSString *)content f_id:(NSString *)f_id Success:(void(^)(id responseObject))success Failure:(void(^)(NSError *error))failure;
 @end

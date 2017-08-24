@@ -26,7 +26,7 @@
                   moduleName = "MangGuoProject"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/lijunjie/Desktop/MangGuoProject/MangGuoProject/DetailView/Controller/SencondDetailViewController.m"
-                  timestampString = "524562843.699122"
+                  timestampString = "525238308.668484"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "64"
@@ -41,7 +41,7 @@
                   moduleName = "MangGuoProject"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/lijunjie/Desktop/MangGuoProject/MangGuoProject/DetailView/Controller/SencondDetailViewController.m"
-                  timestampString = "524562843.702007"
+                  timestampString = "525238308.670099"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "65"
@@ -131,14 +131,46 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "MangGuoProject/DetailView/Controller/NativeWebViewController.m"
-            timestampString = "524461012.743813"
+            filePath = "MangGuoProject/DetailView/Model/WebViewJS.m"
+            timestampString = "525235482.289134"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "148"
-            endingLineNumber = "148"
-            landmarkName = "-keyBoardViewHide:textView:"
+            startingLineNumber = "28"
+            endingLineNumber = "28"
+            landmarkName = "-subok:"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[WebViewJS subok:]"
+                  moduleName = "MangGuoProject"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lijunjie/Desktop/MangGuoProject/MangGuoProject/DetailView/Model/WebViewJS.m"
+                  timestampString = "525238308.694035"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "28"
+                  endingLineNumber = "28"
+                  offsetFromSymbolStart = "56">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__19-[WebViewJS subok:]_block_invoke"
+                  moduleName = "MangGuoProject"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lijunjie/Desktop/MangGuoProject/MangGuoProject/DetailView/Model/WebViewJS.m"
+                  timestampString = "525238308.695516"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "28"
+                  endingLineNumber = "28"
+                  offsetFromSymbolStart = "24">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

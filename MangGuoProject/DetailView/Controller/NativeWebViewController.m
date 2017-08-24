@@ -9,34 +9,38 @@
 #import "NativeWebViewController.h"
 #import "YcKeyBoardView.h"
 #import <JavaScriptCore/JavaScriptCore.h>
-@interface NativeWebViewController ()<BackBtnDelegate,UIWebViewDelegate,YcKeyBoardViewDelegate>
-@property(nonatomic,strong)NSString *webDetail;
+#import "WebViewJS.h"
+@interface NativeWebViewController ()<BackBtnDelegate,UIWebViewDelegate,YcKeyBoardViewDelegate,WebViewJSDelegate>{
+    NSString *replyType;
+}
+@property(nonatomic,strong)NSString *webDetail,*replyId;
 @property(nonatomic,strong)UIWebView *webview;
 @property(nonatomic,strong)UIView *bottomview;
 @property (nonatomic,strong)YcKeyBoardView *key;
 @property (nonatomic,strong)NSDictionary *jsonDict;
+@property(nonatomic, strong) WebViewJS *WebviewJs;
 @end
 
 @implementation NativeWebViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-  //  self.title=@"h5";
-   
     BackBtn *backbtn=[[BackBtn alloc]initWithFrame:CGRectMake(0, 0, 30, 40)];
     backbtn.delegate=self;
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:backbtn];
     UIWebView* webView = [[UIWebView alloc]initWithFrame:CGRectMake(0, 0, kScreen_Width, kScreen_Height-64-10)];
     self.webview=webView;
     webView.delegate=self;
-    // webView.scalesPageToFit = YES;//自动对页面进行缩放以适应屏幕
     [self.view addSubview:webView];
     
     webView.backgroundColor = [UIColor clearColor];
-    //        _webView.scrollView.scrollEnabled = NO;
     webView.allowsInlineMediaPlayback = YES;
     webView.mediaPlaybackRequiresUserAction = YES;
- [self getData];
+    self.webview.userInteractionEnabled=YES;
+    [self getData];
+    self.WebviewJs = [[WebViewJS alloc] init];
+    self.WebviewJs.delegate = self;
+
    // [self setbottomview];
 
 }
@@ -70,11 +74,17 @@
 //}
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
-    [webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.style.webkitUserSelect='none';"];
-    [webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.style.webkitTouchCallout='none';"];
-  //  self.title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+//    [webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.style.webkitUserSelect='none';"];
+//    [webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.style.webkitTouchCallout='none';"];
+
+    
     JSContext *context=[webView valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
-    context[@"obj"]=self.webview;
+    context[@"obj"]=self.WebviewJs;
+
+}
+-(void)replyJS:(NSString *)replyId{
+    _replyId=replyId;
+    [self startReply];
 }
 -(void)viewWillDisappear:(BOOL)animated{
     [_bottomview removeFromSuperview];
@@ -112,19 +122,33 @@
         self.key=[[YcKeyBoardView alloc]initWithFrame:CGRectMake(0, kScreen_Height-44, kScreen_Width, 44)];
         
     }
+    replyType=@"0";
     self.key.delegate=self;
     [self.key.textView becomeFirstResponder];
     [self.rdv_tabBarController.view addSubview:self.key];
-    
+}
+-(void)startReply{
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardShow:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardHide:) name:UIKeyboardWillHideNotification object:nil];
+    if(self.key==nil){
+        self.key=[[YcKeyBoardView alloc]initWithFrame:CGRectMake(0, kScreen_Height-44, kScreen_Width, 44)];
+        
+    }
+    replyType=@"1";
+    self.key.delegate=self;
+    [self.key.textView becomeFirstResponder];
+    [self.rdv_tabBarController.view addSubview:self.key];
 }
 -(void)keyboardShow:(NSNotification *)note
 {
-            self.key.label.text=@"请输入回复内容";
-    
+    if ([replyType integerValue]==0) {
+        self.key.label.text=@"请输入评论内容";
+    }else{
+        self.key.label.text=@"请输入回复内容";
+    }
     
     CGRect keyBoardRect=[note.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
     CGFloat deltaY=keyBoardRect.size.height;
-//    self.keyBoardHeight=deltaY;
     [UIView animateWithDuration:[note.userInfo[UIKeyboardAnimationDurationUserInfoKey] floatValue] animations:^{
         
         self.key.transform=CGAffineTransformMakeTranslation(0, -deltaY);
@@ -209,8 +233,6 @@
         }else{
         NSDictionary *jsonDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
             _jsonDict=jsonDict;
-//             NSString *dataStr =[[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
-//            _webDetail=dataStr;
            
            [self.webview loadHTMLString:jsonDict[@"str"] baseURL:nil];
         }
@@ -228,31 +250,31 @@
 -(void)sendClassComment{
     NSLog(@"%@",self.key.textView.text);
     if (self.key.textView.text.length==0) {
-        [JRToast showWithText:@"评论内容不能为空" duration:2.0];
+        [JRToast showWithText:@"内容不能为空" duration:2.0];
         return;
     }
     [self.key removeFromSuperview];
-    [kNetManager submitComent:[DEFAULTS objectForKey:@"userId"] news_id:self.news_id content:self.key.textView.text Success:^(id responseObject) {
-        NSLog(@"submit:%@",responseObject);
-        if ([responseObject[@"status"] integerValue]==100) {
-            [JRToast showWithText:@"评论成功" duration:1.0];
-            [self getData];
-//           [self.webview reload];
-//             [self.webview loadHTMLString:_jsonDict[@"str"] baseURL:nil];
-//            
-//            JSContext *context=[self.webview valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext" ];
-//            context.exceptionHandler = ^(JSContext *con, JSValue *exception) {
-//                con.exception = exception;
-//            };
-//            NSString *uid=[DEFAULTS objectForKey:@"userId"];
-//            NSString *alertJS=[NSString stringWithFormat:@"addcom('%@','%@')",uid,self.key.textView.text];
-//            NSString *js=@"site()";
-//            [context evaluateScript:js];
+    if ([replyType integerValue]==0) {
 
-        }
-    } Failure:^(NSError *error) {
+        [kNetManager submitComent:[DEFAULTS objectForKey:@"userId"] news_id:self.news_id content:self.key.textView.text Success:^(id responseObject) {
+            NSLog(@"submit:%@",responseObject);
+            if ([responseObject[@"status"] integerValue]==100) {
+                [JRToast showWithText:@"评论成功" duration:1.0];
+                [self getData];
+
+            }
+        } Failure:^(NSError *error) {
         
-    }];
+        }];
+    }else{
+        [kNetManager replyComment:[DEFAULTS objectForKey:@"userId"] news_id:self.news_id  content:self.key.textView.text f_id:_replyId Success:^(id responseObject) {
+            [JRToast showWithText:@"回复成功" duration:1.0];
+            [self getData];
+
+        } Failure:^(NSError *error) {
+            
+        }];
+    }
 }
 /*
 #pragma mark - Navigation
